@@ -1115,34 +1115,70 @@ function renderTermCards() {
     }
 
     var year = years[0];
-    var termList = [['Term 1','الفصل الأول','fa-sun'],['Term 2','الفصل الثاني','fa-moon']];
+    var termList = [['Term 1','الفصل الأول'],['Term 2','الفصل الثاني']];
     var html = '';
+
     termList.forEach(function(t) {
-        var term = t[0]; var termName = t[1]; var icon = t[2];
+        var term = t[0]; var termName = t[1];
         var filtered = allStudentResults.filter(function(r) { return r.term === term && r.academic_year === year; });
         var count = filtered.length;
         var total = filtered.reduce(function(s,r) { return s + r.score; }, 0);
         var hasData = count > 0;
-        html += '<div';
-        if (hasData) html += " onclick='showTermReport(\"" + term + "\",\"" + year + "\")' onmouseover=\"this.style.transform='translateY(-5px)'\" onmouseout=\"this.style.transform='translateY(0)'\"";
-        html += ' style="background:' + (hasData ? 'linear-gradient(135deg,#1e5a3a,#2b7a4f)' : '#e0e0e0') + ';';
-        html += 'color:' + (hasData ? 'white' : '#999') + ';border-radius:1.2rem;padding:2rem 1.5rem;text-align:center;';
-        html += 'cursor:' + (hasData ? 'pointer' : 'default') + ';transition:all 0.3s;';
-        html += 'box-shadow:' + (hasData ? '0 8px 20px rgba(30,90,58,0.3)' : 'none') + ';';
-        html += 'border:' + (hasData ? '2px solid rgba(255,179,71,0.4)' : '2px dashed #ccc') + ';">';
-        html += '<i class="fas ' + icon + '" style="font-size:2.5rem;color:' + (hasData?'#FFB347':'#bbb') + ';margin-bottom:1rem;display:block;"></i>';
-        html += '<div style="font-size:1.4rem;font-weight:700;margin-bottom:0.5rem;">' + termName + '</div>';
-        html += '<div style="font-size:0.9rem;opacity:0.85;margin-bottom:0.5rem;">' + year + '</div>';
+
+        var bannerBg = hasData ? 'linear-gradient(135deg,#1e5a3a,#2b7a4f)' : '#b0b0b0';
+        var cardBorder = hasData ? '#d0e8d8' : '#e5e5e5';
+
+        html += '<div class="term-card" data-term="' + term + '" data-year="' + year + '" data-has="' + (hasData?'1':'0') + '" ';
+        html += 'style="background:#fff;border-radius:1.2rem;overflow:hidden;cursor:' + (hasData?'pointer':'default') + ';';
+        html += 'transition:all 0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid ' + cardBorder + ';">';
+
+        // Green/grey top banner
+        html += '<div style="background:' + bannerBg + ';padding:1rem 1.5rem;text-align:center;">';
+        html += '<div style="font-size:1.2rem;font-weight:700;color:white;">' + termName + '</div>';
+        html += '<div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">' + year + '</div>';
+        html += '</div>';
+
+        // Grey middle with PDF icon
+        html += '<div style="background:#f5f5f5;padding:1.5rem;text-align:center;border-bottom:1px solid #eee;">';
         if (hasData) {
-            html += '<div style="background:rgba(255,255,255,0.15);border-radius:30px;padding:0.3rem 1rem;margin-top:0.8rem;font-size:0.9rem;">' + count + ' مادة · مجموع ' + total + '</div>';
-            html += '<div style="margin-top:1rem;font-size:0.85rem;opacity:0.8;"><i class="fas fa-eye" style="margin-left:0.3rem;"></i>انقر لعرض كشف الدرجات</div>';
+            html += '<div style="width:65px;height:80px;background:white;border:2px solid #dce8dc;border-radius:8px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.07);">';
+            html += '<i class="fas fa-file-pdf" style="font-size:2rem;color:#e53e3e;"></i>';
+            html += '<div style="font-size:0.6rem;color:#888;margin-top:0.3rem;font-weight:700;letter-spacing:1px;">PDF</div></div>';
+            html += '<div style="margin-top:0.8rem;font-size:0.82rem;color:#666;">كشف الدرجات جاهز</div>';
         } else {
-            html += '<div style="font-size:0.85rem;margin-top:0.8rem;">لا توجد نتائج</div>';
+            html += '<div style="width:65px;height:80px;background:#ebebeb;border:2px dashed #ccc;border-radius:8px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;">';
+            html += '<i class="fas fa-file" style="font-size:2rem;color:#ccc;"></i>';
+            html += '<div style="font-size:0.6rem;color:#ccc;margin-top:0.3rem;letter-spacing:1px;">PDF</div></div>';
+            html += '<div style="margin-top:0.8rem;font-size:0.82rem;color:#bbb;">لا توجد نتائج</div>';
         }
         html += '</div>';
+
+        // White bottom with stats
+        html += '<div style="padding:1rem 1.2rem;background:#fff;text-align:center;">';
+        if (hasData) {
+            html += '<div style="display:flex;justify-content:space-around;margin-bottom:0.8rem;">';
+            html += '<div><div style="font-size:1.3rem;font-weight:700;color:#1e5a3a;">' + count + '</div><div style="font-size:0.72rem;color:#999;">مادة</div></div>';
+            html += '<div style="width:1px;background:#eee;"></div>';
+            html += '<div><div style="font-size:1.3rem;font-weight:700;color:#1e5a3a;">' + total + '</div><div style="font-size:0.72rem;color:#999;">المجموع</div></div>';
+            html += '</div>';
+            html += '<div style="background:#1e5a3a;color:white;padding:0.5rem 1rem;border-radius:30px;font-size:0.85rem;font-weight:600;">';
+            html += '<i class="fas fa-eye" style="margin-left:0.4rem;"></i>عرض كشف الدرجات</div>';
+        } else {
+            html += '<div style="color:#ccc;font-size:0.85rem;">لم تُرفع النتائج بعد</div>';
+        }
+        html += '</div></div>';
     });
+
     grid.innerHTML = html;
+
+    // Attach click events using addEventListener (no inline JS quoting issues)
+    grid.querySelectorAll('.term-card[data-has="1"]').forEach(function(card) {
+        card.addEventListener('mouseover', function() { this.style.transform = 'translateY(-6px)'; this.style.boxShadow = '0 16px 40px rgba(30,90,58,0.18)'; });
+        card.addEventListener('mouseout', function() { this.style.transform = 'translateY(0)'; this.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)'; });
+        card.addEventListener('click', function() { showTermReport(this.dataset.term, this.dataset.year); });
+    });
 }
+
 
 function showTermReport(term, year) {
     var results = allStudentResults.filter(function(r) { return r.term === term && r.academic_year === year; });
