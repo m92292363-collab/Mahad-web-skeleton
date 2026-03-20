@@ -1,3 +1,4 @@
+import 'auth_screen.dart';
 import 'send_money_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -104,7 +105,11 @@ class FlowFinanceApp extends StatelessWidget {
           secondary: Color(0xFF2E7D32),
         ),
       ),
-      home: const HomePage(),
+      initialRoute: '/auth',
+      routes: {
+        '/auth': (context) => const AuthScreen(),
+        '/home': (context) => const HomePage(),
+      },
     );
   }
 }
