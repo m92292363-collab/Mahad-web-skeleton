@@ -1,3 +1,4 @@
+import 'send_money_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -351,7 +352,15 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildQuickAction(Icons.send, 'Send', const Color(0xFF4CAF50)),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SendMoneyScreen()),
+                          );
+                        },
+                        child: _buildQuickAction(Icons.send, 'Send', const Color(0xFF4CAF50)),
+                      ),
                       _buildQuickAction(Icons.bolt, 'Bills', const Color(0xFF4CAF50)),
                       _buildQuickAction(Icons.phone_android, 'Mobile', const Color(0xFF4CAF50)),
                       _buildQuickAction(Icons.shopping_cart, 'Shop', const Color(0xFF4CAF50)),
